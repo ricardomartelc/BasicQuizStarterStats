@@ -42,7 +42,7 @@ public class CheatActivity extends AppCompatActivity {
       answerCheated = savedInstanceState.getBoolean(KEY_CHEATED);
 
       if(answerCheated) {
-        onYesButtonClicked();
+        onYesButtonClicked();  // desconecta buttons: yes y no
       }
     }
 

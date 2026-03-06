@@ -80,7 +80,7 @@ public class QuestionActivity extends AppCompatActivity {
         outState.putBoolean(KEY_ENABLED, nextButtonEnabled);
     }
 
-    private void updateLayoutContent() {
+    private void updateLayoutContent() {            //////////////////////////////////////////////////////////
         Log.d(TAG, "updateLayoutContent");
 
         questionField.setText(questionsArray[questionIndex]);
@@ -97,7 +97,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         if (nextButtonEnabled && questionIndex == questionsArray.length-1) {
             nextButtonEnabled = false;
-            statsButtonEnabled = true;
+            statsButtonEnabled = true;   // STATS button solo activo cuando estamos en la ultima pregunta
 
         } else {
             statsButtonEnabled = false;
@@ -158,13 +158,41 @@ public class QuestionActivity extends AppCompatActivity {
         //  para que esta última deje el estado de la pantalla como está pero
         //  desactive el botón de "Next" para impedir avanzar a la siguiente pregunta
 
-        // TODO:
-        //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
-        //  para que esta última reinicie el Quiz
+        // Si el paquete que acaba de llegar tiene el número 2, entonces sé que
+        // los datos que vienen dentro (EXTRA_RESET, EXTRA_EXIT, etc.) son los de
+        // la pantalla de Estadísticas y no otra cosa
+        if (requestCode == STATS_REQUEST){
+            // cuando pulsamos un boton de los programados en stats, devolvemos un RESULT_OK y un intent
+            if (resultCode == RESULT_OK && intent != null){
+                // no se pone pero solo entra al if si es true, es como si: if (miNota(getBool...) == true) entra
+                if (intent.getBooleanExtra(StatsActivity.EXTRA_BACK, false)) {  // si llega un true -> ENTRA
+                    nextButtonEnabled = false;
+                    resultText = getString(R.string.empty_text);
+                    updateLayoutContent(); // actualizamos pantalla. Dejar el mismo estado --> dejar la misma pregunta
+                }
 
-        // TODO:
-        //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
-        //  para que esta última finalice la app Quiz
+                // TODO:
+                //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
+                //  para que esta última reinicie el Quiz
+
+                else if (intent.getBooleanExtra(StatsActivity.EXTRA_RESET, false)){
+                    questionIndex = 0;
+                    correctAnswers = 0; // contador
+                    totalQuestions = 0; // contador
+                    nextButtonEnabled = false;
+                    resultText = getString(R.string.empty_text);
+                    updateLayoutContent();
+                }
+
+                // TODO:
+                //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
+                //  para que esta última finalice la app Quiz
+
+                else if (intent.getBooleanExtra(StatsActivity.EXTRA_EXIT, false)) {
+                    finish();
+                }
+            }
+        }
 
 
 
@@ -185,9 +213,15 @@ public class QuestionActivity extends AppCompatActivity {
             //  utilizando el codigo que contiene el "if" ahora
 
             if (answerCheated) {
+                if (questionIndex == questionsArray.length-1){
+                    nextButtonEnabled = true;  // desactivamos los demás botones
+                    updateLayoutContent(); // desactiva toodo menos stats cuando estamos en la ultima pregunta
+                }
+                else {
+                    nextButtonEnabled = true;
+                    onNextButtonClicked();
+                }
 
-                nextButtonEnabled = true;
-                onNextButtonClicked();
             }
 
         }
@@ -198,8 +232,8 @@ public class QuestionActivity extends AppCompatActivity {
     private void onNextButtonClicked() {
         Log.d(TAG, "onNextButtonClicked");
 
-        nextButtonEnabled = false;
         questionIndex++;
+        nextButtonEnabled = false;
 
         if (questionIndex < questionsArray.length) {
             updateLayoutContent();
@@ -218,7 +252,9 @@ public class QuestionActivity extends AppCompatActivity {
         //  y de respuestas acertadas
 
         Intent intent = new Intent(this, StatsActivity.class);
-        startActivityForResult(intent, STATS_REQUEST); // Código de solicitud
+        intent.putExtra(StatsActivity.EXTRA_QUESTIONS, totalQuestions);  // EXTRA_QUESTIONS viene de Stats, es
+        intent.putExtra(StatsActivity.EXTRA_ANSWERS, correctAnswers);   //quien tiene que recoger el "sobre"
+        startActivityForResult(intent, STATS_REQUEST); // Código de solicitud "Vete a Stats, mi código de pedido es el 2"
     }
 
 
