@@ -75,9 +75,10 @@ public class StatsActivity extends AppCompatActivity {
         //  desactive el botón de "Next" para impedir avanzar a la siguiente pregunta
 
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_BACK, true);  // las notas se envían a questionActity (registramos que fue back)
-        setResult(RESULT_OK, intent);     // dependiendo de la nota de lo que haya llegado
-        finish();                       // hace una cosa u otra.
+        intent.putExtra(EXTRA_BACK, true);
+        setResult(RESULT_OK, intent);
+        finish();
+
     }
 
 
@@ -88,11 +89,17 @@ public class StatsActivity extends AppCompatActivity {
         //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
         //  para que esta última reinicie el Quiz
 
-        // la pantalla que tenemos debajo es questionActivity, y al cerrar (finish) stats, queda question
+        // 1. Creamos el sobre (Intent)
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_RESET, true); // Avisamos que queremos reiniciar (true si queremos salir) (registramos que fue reset)
+
+        // 2. Metemos la nota: "¡Reinicia todo!"
+        intent.putExtra(EXTRA_RESET, true);
+
+        // 3. Le entregamos el sobre al sistema para la pantalla anterior
         setResult(RESULT_OK, intent);
-        finish(); // cerrando statsActivity, se abre questionActivity
+
+        // 4. Cerramos esta pantalla
+        finish();
     }
 
 
@@ -103,11 +110,19 @@ public class StatsActivity extends AppCompatActivity {
         //  la pantalla "Stats" debe devolver un resultado a la pantalla "Question"
         //  para que esta última finalice la app Quiz
 
-        // la pantalla que tenemos debajo es questionActivity, y al cerrar (finish) stats, queda question
+        // 1. Creamos el sobre (Intent)
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_EXIT, true);  // true: si, quiero salir (registramos que fue exit)
-        setResult(RESULT_OK, intent); // Significa "t odo bien, el usuario confirmó la acción (pulsó tu botón)".
+
+        // 2. Metemos la nota: "Cierra la aplicación"
+        intent.putExtra(EXTRA_EXIT, true);
+
+        // 3. Entregamos el paquete
+        setResult(RESULT_OK, intent);
+
+        // 4. Cerramos StatsActivity
         finish();
+
+
     }
 
 
@@ -116,10 +131,10 @@ public class StatsActivity extends AppCompatActivity {
 
         // Mostrar resultados
         totalQuestionsField.setText(
-            getString(R.string.total_questions_text) + ": " + totalQuestions
+                getString(R.string.total_questions_text) + ": " + totalQuestions
         );
         correctAnswersField.setText(
-            getString(R.string.correct_answers_text) + ": " + correctAnswers
+                getString(R.string.correct_answers_text) + ": " + correctAnswers
         );
     }
 

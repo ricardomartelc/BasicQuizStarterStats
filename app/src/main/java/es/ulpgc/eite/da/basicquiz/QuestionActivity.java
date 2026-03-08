@@ -85,7 +85,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         questionField.setText(questionsArray[questionIndex]);
 
-        if (!nextButtonEnabled) {
+        if (!nextButtonEnabled && !statsButtonEnabled) {   ////////////
             resultText = getString(R.string.empty_text);
         }
 
@@ -167,7 +167,7 @@ public class QuestionActivity extends AppCompatActivity {
                 // no se pone pero solo entra al if si es true, es como si: if (miNota(getBool...) == true) entra
                 if (intent.getBooleanExtra(StatsActivity.EXTRA_BACK, false)) {  // si llega un true -> ENTRA
                     nextButtonEnabled = false;
-                    resultText = getString(R.string.empty_text);
+                    statsButtonEnabled = true;
                     updateLayoutContent(); // actualizamos pantalla. Dejar el mismo estado --> dejar la misma pregunta
                 }
 
@@ -199,7 +199,7 @@ public class QuestionActivity extends AppCompatActivity {
         if (requestCode == CHEAT_REQUEST && resultCode == RESULT_OK && intent != null) {
 
             boolean answerCheated = intent.getBooleanExtra(
-                CheatActivity.EXTRA_CHEATED, false
+                    CheatActivity.EXTRA_CHEATED, false
             );
 
             //Log.d(TAG, "answerCheated: " + answerCheated);
